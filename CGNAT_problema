@@ -1,0 +1,29 @@
+Si lo que buscas es exponer tu honeypot a internet y ya intentaste hacer portforwarding o utilizaste el servicio de DNS dinamico como NO-IP o DUCKDNS
+debes saber que tu proveedor de internet en contratos residenciales (Hogares) muy probablemente no te da IP publica si no que te genera una ip dentro de su red utilizando CGNAT, es decir, crea direcciones ip que asigna a sus clientes y luego
+las redirecciona a su IP publica.
+
+esto es un problema ya que no te permitira llegar a tu servidor supuestamente expuesto
+
+¿Como puedes darte cuenta que estas detras de un servicio CGNAT?
+
+con Nmap y desactivando el ping con el atributo -Pn ya que el ping normalmente lo desactiva tu ISP
+
+Comando:
+nmap -Pn -p 2222 tu_dominio.ddns.net //estoy haciendo un escaneo del puerto 2222 de mi dominio creado en NO-IP ya que el 22 normalmente tambien lo bloquea el ISP entonces anteriormente moví el servicio SSH al 2222, en este caso tengo deshabilitado el ping
+ya que estaba bloqueado por mi ISP.
+
+SALIDA:
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-09-08 00:34 CST
+Nmap scan report for pruebamax.ddns.net (187.243.43.80)
+Host is up.
+rDNS record for 187.243.43.80: customer-SHY-CGN-TGZ-43-80.megared.net.mx       //El rDNS muestra customer-SHY-CGN-TGZ-43-80.megared.net.mx lo que quiere decir que estoy detrás del CGNAT de mi ISP (Megacable).
+
+PORT     STATE    SERVICE
+2222/tcp filtered EtherNetIP-1            //EL PUERTO 2222 QUE DEFINI PARA SSH ESTA EN ESTADO FILTRADO LO QUE QUIERE DECIR QUE ALGO LO ESTA BLOQUEANDO,
+                                          //Nmap no puede determinar si el puerto está abierto o cerrado porque los paquetes enviados no recibieron respuesta.
+
+Nmap done: 1 IP address (1 host up) scanned in 2.86 seconds
+
+COmo solucion a este problema necesitas optar por pedirle al ISP que por un costo extra te asigne una ip publica o utilizar un servicio de tunel inverso como Ngrok o cloudflare tunnel, NO-IP ni DUCKDNS te serviran 
+saludos.
+
